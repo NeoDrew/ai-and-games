@@ -36,9 +36,12 @@ class RaveMCTSNode:
         return (1 - beta) * mcts_value + beta * amaf_value
 
 
-class MCTSAgentOptimised(AgentBase):
+class MCTSAgent(AgentBase):
     def __init__(self, colour: Colour):
         super().__init__(colour)
+        self.friendly_neighbor_weight = 0.5
+        self.bridge_weight = 0.3
+        self.edge_control_weight = 0.4
         self.simulations = 1000
         self.win_score = 10
         self.colour = colour
@@ -96,19 +99,20 @@ class MCTSAgentOptimised(AgentBase):
         neighbors = self.get_neighbor_moves(board, x, y)
         friendly_neighbors = sum(1 for nx, ny in neighbors
                                  if board.tiles[nx][ny].colour == self.colour)
-        score += friendly_neighbors * 0.5
+        score += friendly_neighbors * self.friendly_neighbor_weight
 
         # Bridge formation potential (diagonal connections)
         bridge_score = sum(1 for nx, ny in neighbors
                            if abs(nx-x) == 1 and abs(ny-y) == 1
                            and board.tiles[nx][ny].colour == self.colour)
-        score += bridge_score * 0.3
+        
+        score += bridge_score * self.bridge_weight
 
         # Edge control
         if self.colour == Colour.RED and (x == 0 or x == board.size-1):
-            score += 0.4
+            score += self.edge_control_weight
         elif self.colour == Colour.BLUE and (y == 0 or y == board.size-1):
-            score += 0.4
+            score += self.edge_control_weight
 
         self.move_scores[move] = score
         return score

@@ -62,4 +62,5 @@ class MCTSAgent(AgentBase):
         response = self.agent_process.stdout.readline().rstrip()
         # assuming the response takes the form "x,y" with -1,-1 if the agent wants to make a swap move
         x, y = map(int, response.split(","))
+        print("MCTSAgent response:", x, y)
         return Move(x, y)
