@@ -39,7 +39,7 @@ RUN python3.11 -m pip install --upgrade pip setuptools wheel
 ####### Use if you do not need CUDA support#######
 RUN python3.11 -m pip install --timeout=1000 torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1
 
-RUN python3.11 -m pip install numpy==2.1.3 pandas==2.3.1 scikit-learn
+RUN python3.11 -m pip install numpy==2.1.3 pandas==2.3.1 scikit-learn google-generativeai python-dotenv
 
 
 WORKDIR /home/hex

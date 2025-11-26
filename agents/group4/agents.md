@@ -8,4 +8,4 @@
 
 2. Add the line `GEMINI_API_KEY=` then paste in your api key from gemini
 
-3. The docker file should install `google-generativeai`, if you still get an error, run `pip install google-generativeai` inside the container shell.
+3. The docker file should install `google-generativeai`, if you still get an error, run `pip install google-generativeai dotenv` inside the container shell.
