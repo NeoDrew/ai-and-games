@@ -48,8 +48,8 @@ class PreTrainedModel(Module):
 
 class PreTrainedRotatedModel(Module):
     """
-        A HexHex model which has been trained on a rotated board. During the
-        models forward pass, moves are flipped to self-correct for this rotation.
+        A HexHex model which plays on a rotated board. During the
+        models forward pass, moves are flipped.
     """
     def __init__(self, model):
         super(PreTrainedRotatedModel, self).__init__()
@@ -93,8 +93,8 @@ class HexHexAgent(AgentBase):
         )
 
         if hexhex_info['config'].getboolean('rotation_model'):
-            #Model was trained on a rotated board. As such, moves
-            #made by the agent need to be flipped to self-correct this
+            #Model was trained on a rotated board. Re-rotate to 
+            #account for this
             self.model = PreTrainedRotatedModel(self.model)
 
         if isinstance(self.model, PreTrainedRotatedModel):
@@ -105,7 +105,7 @@ class HexHexAgent(AgentBase):
         self.model.eval() #Enable inference
 
 
-    def convert_board_format(self, board: Board) -> torch.Tensor:
+    def _convert_board_format(self, board: Board, rotate: bool) -> torch.Tensor:
         """
             Converts the board layout to a Tensor.
 
@@ -131,18 +131,28 @@ class HexHexAgent(AgentBase):
                 elif tile.colour == opp_colour:
                     x[0, 1, i+1, j+1] = 1.0
 
+        if rotate and self.colour == Colour.BLUE:
+            #If playing as Blue, we want to connect left -> right.
+            #Rotate the board by 90 degrees.
+            x = torch.rot90(x, k=1, dims=[2, 3])
+
         return x
 
     def make_move(self, turn: int, board: Board, opp_move: Move | None) -> Move:
         size = board.size
-        x = self.convert_board_format(board)
+        x_unrot = self._convert_board_format(board=board, rotate=False)
+        x = self._convert_board_format(board=board, rotate=True)
 
         with torch.no_grad():
             logits = self.model(x)[0]
             logits = logits.reshape(size, size) #Convert to move coords
 
+        #If playing as Blue, need to re-rotate back into "normal" coords
+        if self.colour == Colour.BLUE:
+            logits = torch.rot90(logits, k=3)
+
         #Mask out illegal positions
-        occupied = (x[0, 0, 1:-1, 1:-1] + x[0, 1, 1:-1, 1:-1]) > 0
+        occupied = (x_unrot[0, 0, 1:-1, 1:-1] + x_unrot[0, 1, 1:-1, 1:-1]) > 0
         logits[occupied] = -float('inf')
 
         #Select argmax
