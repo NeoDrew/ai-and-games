@@ -91,7 +91,6 @@ class MinimaxAgent(AgentBase):
             return self.getScore(board)
         
         if current_colour == self.colour:
-            print("branch 2")
             max_eval = float('-inf')
             for move in MinimaxHelper.getOrderedMoves(board, current_colour):
                 board.set_tile_colour(move.x, move.y, current_colour)
@@ -102,7 +101,6 @@ class MinimaxAgent(AgentBase):
                 if beta <= alpha: break
             return max_eval
         else:
-            print("Branch 3")
             min_eval = float('inf')
             for move in MinimaxHelper.getOrderedMoves(board, current_colour):
                 board.set_tile_colour(move.x, move.y, current_colour)

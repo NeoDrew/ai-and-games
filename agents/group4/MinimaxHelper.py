@@ -95,15 +95,16 @@ class MinimaxHelper:
             :param colour: The colour of the player to compute the move value for.
             :return: The score of the given move
         """
-        board_cpy = deepcopy(board)
-        tiles = board_cpy.tiles
+        tiles = board.tiles
         if tiles[move.x][move.y].colour:
             #Tile already occupied
             return float('-inf')
-        board_cpy.set_tile_colour(move.x, move.y, colour)
+        board.set_tile_colour(move.x, move.y, colour)
 
-        best_for_me = MinimaxHelper._getShortestPath(board_cpy, colour)
-        best_for_them = MinimaxHelper._getShortestPath(board_cpy, Colour.opposite(colour))
+        best_for_me = MinimaxHelper._getShortestPath(board, colour)
+        best_for_them = MinimaxHelper._getShortestPath(board, Colour.opposite(colour))
+
+        board.set_tile_colour(move.x, move.y, None) #Undo move
 
         if best_for_me == float('inf') and best_for_them == float('inf'):
             #Neither side can win, treat this move as "neutral"
