@@ -4,9 +4,12 @@ from src.AgentBase import AgentBase
 from src.Board import Board
 from src.Colour import Colour
 from src.Move import Move
+from src.Tile import Tile
+from collections import deque
+from group4 import MinimaxHelper
+from copy import deepcopy
 
-
-class NaiveAgent(AgentBase):
+class MinimaxAgent(AgentBase):
     _choices: list[Move]
     _board_size: int = 11
 
@@ -32,14 +35,61 @@ class NaiveAgent(AgentBase):
             Move: The agent's move
         """
 
-        # if turn == 2 and choice([0, 1]) == 1:
-        if turn == 2:
-            return Move(-1, -1)
-        else:
-            x, y = choice(self._choices)
-            return Move(x, y)
+        return self.minimaxRoot(board)
+
+    def getScore(self, board: Board) -> int:
+        """
+            Calculates a heuristic score of a given move
+
+            :param board: Current state of the game board.
+            :param move: The move to assign a value for.
+            :param colour: The colour of the player to compute the move value for.
+            :return: The score of the given move
+        """
+
+        best_for_me = MinimaxHelper._getShortestPath(board, self.colour)
+        best_for_them = MinimaxHelper._getShortestPath(board, self.colour.opposite())
+
+        if best_for_me == float('inf') and best_for_them == float('inf'):
+            #Neither side can win, treat this move as "neutral"
+            return 0
+
+        return best_for_them - best_for_me
+    
+    def minimaxRoot(self, board:Board, depth=3) -> Move:
+        alpha=float('-inf')
+        beta=float('inf')
+        best_move = None
+        max_eval = float('-inf')
+        for move in MinimaxHelper.getOrderedMoves(board):
+            board_cpy = deepcopy(board)
+            board_cpy.set_tile_colour(move.x(), move.y(), self.colour)
+            eval = self.minimaxVal(board_cpy, self.colour.opposite(), depth-1, alpha, beta)
+            if eval > max_eval:
+                max_eval = eval
+                best_move = move
+        return best_move
         
-    def get_valid_moves(self, board: Board) -> list[tuple[int, int]]:
-        return [(i, j) for i in range(board.size)
-                for j in range(board.size)
-                if board.tiles[i][j].colour is None]
+    def minimaxVal(self, board: Board, current_colour: Colour, depth: int, alpha, beta) -> int:
+        if depth == 0 or board.has_ended(self.colour) or board.has_ended(self.colour.opposite()):
+            return self.getScore(board)
+        elif current_colour == self.colour:
+            max_eval = float('-inf')
+            for move in MinimaxHelper.getOrderedMoves(board):
+                board_cpy = deepcopy(board)
+                board_cpy.set_tile_colour(move.x(), move.y(), current_colour)
+                eval = self.minimaxVal(board_cpy, current_colour.opposite(), depth-1, alpha, beta)
+                max_eval = max(max_eval, eval)
+                alpha = max(alpha, eval)
+                if beta <= alpha: break
+            return max_eval
+        else:
+            min_eval = float('inf')
+            for move in MinimaxHelper.getOrderedMoves(board):
+                board_cpy = deepcopy(board)
+                board_cpy.set_tile_colour(move.x(), move.y(), current_colour)
+                eval = self.minimaxVal(board_cpy, current_colour.opposite(), depth-1, alpha, beta)
+                min_eval = min(min_eval, eval)
+                beta = min(beta, eval)
+                if beta <= alpha: break
+            return min_eval

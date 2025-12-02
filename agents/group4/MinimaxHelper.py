@@ -121,7 +121,7 @@ class MinimaxHelper:
 
         return best_for_them - best_for_me
 
-    def orderMoves(self, board: Board, moves: list, colour: Colour) -> list:
+    def getOrderedMoves(self, board: Board, moves: list, colour: Colour) -> list:
         """
             Returns moves ordered by their heuristic score in descending order
 
