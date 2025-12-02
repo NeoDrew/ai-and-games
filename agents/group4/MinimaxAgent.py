@@ -6,7 +6,7 @@ from src.Colour import Colour
 from src.Move import Move
 from src.Tile import Tile
 from collections import deque
-from group4 import MinimaxHelper
+from agents.group4.MinimaxHelper import MinimaxHelper
 from copy import deepcopy
 
 class MinimaxAgent(AgentBase):
@@ -18,6 +18,7 @@ class MinimaxAgent(AgentBase):
         self._choices = [
             (i, j) for i in range(self._board_size) for j in range(self._board_size)
         ]
+        self.count = 0
 
     def make_move(self, turn: int, board: Board, opp_move: Move | None) -> Move:
         """The game engine will call this method to request a move from the agent.
@@ -46,9 +47,8 @@ class MinimaxAgent(AgentBase):
             :param colour: The colour of the player to compute the move value for.
             :return: The score of the given move
         """
-
         best_for_me = MinimaxHelper._getShortestPath(board, self.colour)
-        best_for_them = MinimaxHelper._getShortestPath(board, self.colour.opposite())
+        best_for_them = MinimaxHelper._getShortestPath(board, Colour.opposite(self.colour))
 
         if best_for_me == float('inf') and best_for_them == float('inf'):
             #Neither side can win, treat this move as "neutral"
@@ -56,39 +56,42 @@ class MinimaxAgent(AgentBase):
 
         return best_for_them - best_for_me
     
-    def minimaxRoot(self, board:Board, depth=3) -> Move:
+    def minimaxRoot(self, board:Board, depth=2) -> Move:
         alpha=float('-inf')
         beta=float('inf')
         best_move = None
         max_eval = float('-inf')
-        for move in MinimaxHelper.getOrderedMoves(board):
+        for move in MinimaxHelper.getOrderedMoves(board, self.colour):
             board_cpy = deepcopy(board)
-            board_cpy.set_tile_colour(move.x(), move.y(), self.colour)
-            eval = self.minimaxVal(board_cpy, self.colour.opposite(), depth-1, alpha, beta)
+            board_cpy.set_tile_colour(move.x, move.y, self.colour)
+            eval = self.minimaxVal(board_cpy, Colour.opposite(self.colour), depth-1, alpha, beta)
             if eval > max_eval:
                 max_eval = eval
                 best_move = move
         return best_move
         
     def minimaxVal(self, board: Board, current_colour: Colour, depth: int, alpha, beta) -> int:
-        if depth == 0 or board.has_ended(self.colour) or board.has_ended(self.colour.opposite()):
+        print(self.count)
+        self.count += 1
+        print(depth)
+        if depth == 0 or board.has_ended(self.colour) or board.has_ended(Colour.opposite(self.colour)):
             return self.getScore(board)
         elif current_colour == self.colour:
             max_eval = float('-inf')
-            for move in MinimaxHelper.getOrderedMoves(board):
+            for move in MinimaxHelper.getOrderedMoves(board, current_colour):
                 board_cpy = deepcopy(board)
-                board_cpy.set_tile_colour(move.x(), move.y(), current_colour)
-                eval = self.minimaxVal(board_cpy, current_colour.opposite(), depth-1, alpha, beta)
+                board_cpy.set_tile_colour(move.x, move.y, current_colour)
+                eval = self.minimaxVal(board_cpy, Colour.opposite(current_colour), depth-1, alpha, beta)
                 max_eval = max(max_eval, eval)
                 alpha = max(alpha, eval)
                 if beta <= alpha: break
             return max_eval
         else:
             min_eval = float('inf')
-            for move in MinimaxHelper.getOrderedMoves(board):
+            for move in MinimaxHelper.getOrderedMoves(board, current_colour):
                 board_cpy = deepcopy(board)
-                board_cpy.set_tile_colour(move.x(), move.y(), current_colour)
-                eval = self.minimaxVal(board_cpy, current_colour.opposite(), depth-1, alpha, beta)
+                board_cpy.set_tile_colour(move.x, move.y, current_colour)
+                eval = self.minimaxVal(board_cpy, Colour.opposite(current_colour), depth-1, alpha, beta)
                 min_eval = min(min_eval, eval)
                 beta = min(beta, eval)
                 if beta <= alpha: break

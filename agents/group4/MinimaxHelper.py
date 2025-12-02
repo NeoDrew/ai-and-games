@@ -8,7 +8,8 @@ from copy import deepcopy
 class MinimaxHelper:
     """A class of helper functions for MiniMax with Alpha-Beta Pruning"""
     
-    def getLegalMoves(self, board: Board) -> list:
+    @staticmethod
+    def getLegalMoves(board: Board) -> list:
         """
             Gets a list of all legal moves based on the current board state
         
@@ -16,17 +17,18 @@ class MinimaxHelper:
             :return legal_moves: A list of Move objects, denoting the available legal moves.
         """
         legal_moves = []
-        tiles = board.tiles()
+        tiles = board.tiles
 
-        for i in range(board.size()):
-            for j in range(board.size()):
-                if not tiles[i][j].colour():
+        for i in range(board.size):
+            for j in range(board.size):
+                if not tiles[i][j].colour:
                     #Tile is unoccupied, could move here
                     legal_moves.append(Move(i,j))
 
         return legal_moves
 
-    def _getShortestPath(self, board: Board, colour: Colour) -> int:
+    @staticmethod
+    def _getShortestPath(board: Board, colour: Colour) -> int:
         """
             Uses breadth-first search to find the shortest winning
             connection between two sides of the board.
@@ -35,8 +37,8 @@ class MinimaxHelper:
             :param colour:  Colour of the player to find the shortest path for.
             
         """
-        size = board.size()
-        tiles = board.tiles()
+        size = board.size
+        tiles = board.tiles
         visited = set()
         parent = {}
         queue = deque()
@@ -96,7 +98,8 @@ class MinimaxHelper:
             #There is no winning path available
             return float('inf')
 
-    def getMoveScore(self, board: Board, move: Move, colour: Colour) -> int:
+    @staticmethod
+    def getMoveScore(board: Board, move: Move, colour: Colour) -> int:
         """
             Calculates a heuristic score of a given move
 
@@ -106,14 +109,14 @@ class MinimaxHelper:
             :return: The score of the given move
         """
         board_cpy = deepcopy(board)
-        tiles = board_cpy.tiles()
-        if tiles[move.x()][move.y()].colour():
+        tiles = board_cpy.tiles
+        if tiles[move.x][move.y].colour:
             #Tile already occupied
             return float('-inf')
-        board_cpy.set_tile_colour(move.x(), move.y(), colour)
+        board_cpy.set_tile_colour(move.x, move.y, colour)
 
-        best_for_me = self._getShortestPath(board_cpy, colour)
-        best_for_them = self._getShortestPath(board_cpy, colour.opposite())
+        best_for_me = MinimaxHelper._getShortestPath(board_cpy, colour)
+        best_for_them = MinimaxHelper._getShortestPath(board_cpy, Colour.opposite(colour))
 
         if best_for_me == float('inf') and best_for_them == float('inf'):
             #Neither side can win, treat this move as "neutral"
@@ -121,7 +124,8 @@ class MinimaxHelper:
 
         return best_for_them - best_for_me
 
-    def getOrderedMoves(self, board: Board, moves: list, colour: Colour) -> list:
+    @staticmethod
+    def getOrderedMoves(board: Board, colour: Colour) -> list:
         """
             Returns moves ordered by their heuristic score in descending order
 
@@ -130,4 +134,5 @@ class MinimaxHelper:
             :param colour: Colour of the current player.
             :return: A list of sorted Move objects
         """
-        return sorted(moves, key=lambda m: self.getMoveScore(board, m, colour), reverse=True)
+        moves = MinimaxHelper.getLegalMoves(board)
+        return sorted(moves, key=lambda m: MinimaxHelper.getMoveScore(board, m, colour), reverse=True)
