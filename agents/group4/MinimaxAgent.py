@@ -53,8 +53,15 @@ class MinimaxAgent(AgentBase):
         if best_for_me == float('inf') and best_for_them == float('inf'):
             #Neither side can win, treat this move as "neutral"
             return 0
+        
+        if best_for_me == 0:
+            #We won
+            return 10000
+        elif best_for_them == 0:
+            #They won 
+            return -10000
 
-        return best_for_them - best_for_me
+        return (best_for_them - best_for_me) * 100
     
     def minimaxRoot(self, board:Board, depth=2) -> Move:
         alpha=float('-inf')
@@ -62,36 +69,46 @@ class MinimaxAgent(AgentBase):
         best_move = None
         max_eval = float('-inf')
         for move in MinimaxHelper.getOrderedMoves(board, self.colour):
-            board_cpy = deepcopy(board)
-            board_cpy.set_tile_colour(move.x, move.y, self.colour)
-            eval = self.minimaxVal(board_cpy, Colour.opposite(self.colour), depth-1, alpha, beta)
+            #board_cpy = deepcopy(board)
+            board.set_tile_colour(move.x, move.y, self.colour)
+            eval = self.minimaxVal(board, Colour.opposite(self.colour), depth-1, alpha, beta)
+            board.set_tile_colour(move.x, move.y, None) # Undo move
             if eval > max_eval:
                 max_eval = eval
                 best_move = move
         return best_move
         
     def minimaxVal(self, board: Board, current_colour: Colour, depth: int, alpha, beta) -> int:
-        print(self.count)
         self.count += 1
-        print(depth)
-        if depth == 0 or board.has_ended(self.colour) or board.has_ended(Colour.opposite(self.colour)):
+        
+        #Check if the game is over for either player
+        if board.has_ended(self.colour):
+            return 10_000
+        if board.has_ended(Colour.opposite(self.colour)):
+            return -10_000
+
+        if depth == 0:
+            #Depth limit reached
             return self.getScore(board)
-        elif current_colour == self.colour:
+        
+        if current_colour == self.colour:
+            print("branch 2")
             max_eval = float('-inf')
             for move in MinimaxHelper.getOrderedMoves(board, current_colour):
-                board_cpy = deepcopy(board)
-                board_cpy.set_tile_colour(move.x, move.y, current_colour)
-                eval = self.minimaxVal(board_cpy, Colour.opposite(current_colour), depth-1, alpha, beta)
+                board.set_tile_colour(move.x, move.y, current_colour)
+                eval = self.minimaxVal(board, Colour.opposite(current_colour), depth-1, alpha, beta)
+                board.set_tile_colour(move.x, move.y, None) #Undo move
                 max_eval = max(max_eval, eval)
                 alpha = max(alpha, eval)
                 if beta <= alpha: break
             return max_eval
         else:
+            print("Branch 3")
             min_eval = float('inf')
             for move in MinimaxHelper.getOrderedMoves(board, current_colour):
-                board_cpy = deepcopy(board)
-                board_cpy.set_tile_colour(move.x, move.y, current_colour)
-                eval = self.minimaxVal(board_cpy, Colour.opposite(current_colour), depth-1, alpha, beta)
+                board.set_tile_colour(move.x, move.y, current_colour)
+                eval = self.minimaxVal(board, Colour.opposite(current_colour), depth-1, alpha, beta)
+                board.set_tile_colour(move.x, move.y, None) #Undo move
                 min_eval = min(min_eval, eval)
                 beta = min(beta, eval)
                 if beta <= alpha: break

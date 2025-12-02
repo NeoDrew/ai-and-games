@@ -4,6 +4,7 @@ from src.Move import Move
 from src.Tile import Tile
 from collections import deque
 from copy import deepcopy
+import heapq
 
 class MinimaxHelper:
     """A class of helper functions for MiniMax with Alpha-Beta Pruning"""
@@ -30,7 +31,7 @@ class MinimaxHelper:
     @staticmethod
     def _getShortestPath(board: Board, colour: Colour) -> int:
         """
-            Uses breadth-first search to find the shortest winning
+            Uses Dijkstra to find the shortest winning
             connection between two sides of the board.
 
             :param board: Current state of the game board.
@@ -39,64 +40,50 @@ class MinimaxHelper:
         """
         size = board.size
         tiles = board.tiles
+
+        def cost(x, y):
+            """Computes the cost of placing a move at this tile"""
+            tile = tiles[x][y].colour
+            if tile == colour:
+                return 0
+            elif tile == None:
+                return 1
+            else:
+                return float('inf')
+
+        pq = []
         visited = set()
-        parent = {}
-        queue = deque()
 
         if colour == Colour.RED:
             #Top row sources
             for y in range(size):
-                if tiles[0][y].colour == Colour.RED:
-                    queue.append((0,y))
-                    visited.add((0,y))
-                    parent[(0,y)] = None
-        elif colour == Colour.BLUE:
-            #Left column sources
-            for x in range(size):
-                if tiles[x][0].colour == Colour.BLUE:
-                    queue.append((x,0))
-                    visited.add((x,0))
-                    parent[(x,0)] = None
+                heapq.heappush(pq, (cost(0, y), 0, y))
         else:
-            return
+            #Left row sources
+            for x in range(size):
+                heapq.heappush(pq, (cost(x, 0), x, 0))
 
-        target = None
+        while pq:
+            dist, x, y = heapq.heappop(pq)
 
-        while queue:
-            x, y = queue.popleft()
+            if (x, y) in visited:
+                continue
+            visited.add((x, y))
 
             #Goal test
             if colour == Colour.RED and x == size - 1:
-                target = (x, y)
-                break
+                return dist
             if colour == Colour.BLUE and y == size - 1:
-                target = (x, y)
-                break
+                return dist
 
-            #Explore neighbours
+            #Add neighbours to heap
             for idx in range(Tile.NEIGHBOUR_COUNT):
-                x_n = x + Tile.I_DISPLACEMENTS[idx]
-                y_n = y + Tile.J_DISPLACEMENTS[idx]
-                if 0 <= x_n < size and 0 <= y_n < size:
-                    if (x_n, y_n) not in visited and tiles[x_n][y_n].colour == colour:
-                        visited.add((x_n, y_n))
-                        parent[(x_n, y_n)] = (x, y)
-                        queue.append((x_n, y_n))
+                nx = x + Tile.I_DISPLACEMENTS[idx]
+                ny = y + Tile.J_DISPLACEMENTS[idx]
+                if 0 <= nx < size and 0 <= ny < size:
+                    heapq.heappush(pq, (dist + cost(nx, ny), nx, ny))
 
-        #Reconstruct path if the target is reached, calculating
-        #a score for the path
-        if target is not None:
-            score = 0
-            path = []
-            cur = target
-            while cur is not None:
-                path.append(cur)
-                cur = parent[cur]
-                score += 1
-            return score
-        else:
-            #There is no winning path available
-            return float('inf')
+        return float('inf')
 
     @staticmethod
     def getMoveScore(board: Board, move: Move, colour: Colour) -> int:
