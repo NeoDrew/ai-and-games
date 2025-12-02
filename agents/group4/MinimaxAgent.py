@@ -69,7 +69,6 @@ class MinimaxAgent(AgentBase):
         best_move = None
         max_eval = float('-inf')
         for move in MinimaxHelper.getOrderedMoves(board, self.colour):
-            #board_cpy = deepcopy(board)
             board.set_tile_colour(move.x, move.y, self.colour)
             eval = self.minimaxVal(board, Colour.opposite(self.colour), depth-1, alpha, beta)
             board.set_tile_colour(move.x, move.y, None) # Undo move
