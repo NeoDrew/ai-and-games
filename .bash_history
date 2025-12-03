@@ -126,3 +126,37 @@ clear
 python3 Hex.py -p1 "agents.group4.MCTSAgent MCTSAgent" -p2 "agents.group4.HexHexAgent HexHexAgent"
 clear
 exit
+clear
+python3 Hex.py -p1 "agents.group4.MCTSAgent MCTSAgent" -p2 "agents.group4.HexHexAgent HexHexAgent"
+python3 Hex.py -p1 "agents.group4.MCTSAgent MCTSAgent" -p2 "agents.group4.HexHexAgent HexHexAgent"clear
+clear
+python3 Hex.py -p1 "agents.group4.HexHex HexHexAgent" --player1Name "hexhex" -p2 "agents.group4.LLMAgent LLMAgent" --player2Name "gemini"
+python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "hexhex" -p2 "agents.group4.LLMAgent LLMAgent" --player2Name "gemini"
+pip install google-generativeai
+clear
+python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "hexhex" -p2 "agents.group4.LLMAgent LLMAgent" --player2Name "gemini"
+pip install google-generativeai dotenv
+clear
+python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "hexhex" -p2 "agents.group4.LLMAgent LLMAgent" --player2Name "gemini"
+python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "hexhex" -p2 "agents.group4.LLMAgent LLMAgent" --player2Name "gemini"
+python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "hexhex" -p2 "agents.group4.LLMAgent LLMAgent" --player2Name "gemini"
+python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "hexhex" -p2 "agents.group4.LLMAgent LLMAgent" --player2Name "gemini"
+python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "hexhex" -p2 "agents.group4.LLMAgent LLMAgent" --player2Name "gemini"
+python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "hexhex" -p2 "agents.group4.LLMAgent LLMAgent" --player2Name "gemini"
+python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "hexhex" -p2 "agents.group4.LLMAgent LLMAgent" --player2Name "gemini"
+python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "hexhex" -p2 "agents.group4.LLMAgent LLMAgent" --player2Name "gemini"
+python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "hexhex" -p2 "agents.group4.LLMAgent LLMAgent" --player2Name "gemini"
+python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "hexhex" -p2 "agents.group4.LLMAgent LLMAgent" --player2Name "gemini"
+python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "hexhex" -p2 "agents.group4.LLMAgent LLMAgent" --player2Name "gemini"
+clear
+exit
+clear
+python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "hexhex" -p2 "agents.group4.LLMAgent LLMAgent" --player2Name "gemini"
+clear
+python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "hexhex" -p2 "agents.group4.MCTSAgent MCTSAgent" --player2Name "gemini"
+clear
+python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "hexhex" -p2 "agents.group4.MCTSAgent MCTSAgent" --player2Name "MCTS"
+clear
+python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "hexhex" -p2 "agents.group4.MCTSAgent MCTSAgent" --player2Name "MCTS"
+clear
+exit
