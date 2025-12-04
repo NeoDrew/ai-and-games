@@ -2,6 +2,8 @@ from src.AgentBase import AgentBase
 from src.Board import Board
 from src.Colour import Colour
 from src.Move import Move
+import os
+os.environ["TORCH_CPP_LOG_LEVEL"] = "ERROR" #Supress NNPACK warnings
 import torch
 from torch.nn import Module, Conv2d, BatchNorm2d, ModuleList, Parameter
 
