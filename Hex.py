@@ -235,6 +235,11 @@ if __name__ == "__main__":
         total_game_time = 0.0      # sum of total_time for all games
         games_counted = 0          # number of games with valid stats
 
+        # per-game speed comparison counts
+        p1_faster_games = 0        # games where player1 was faster
+        p2_faster_games = 0        # games where player2 was faster
+        tie_faster_games = 0       # games with equal total think time
+
         # Print initial progress bar
         print_progress(
             0,
@@ -285,21 +290,37 @@ if __name__ == "__main__":
                 except (TypeError, ValueError):
                     other_results += 1
                 else:
+                    # track per-game total think time
+                    game_p1_time = 0.0
+                    game_p2_time = 0.0
+
                     # player1 slot in result
                     if res_p1_name == args.player1Name:
                         total_p1_move_time += res_p1_time
                         total_p1_turns += res_p1_turns
+                        game_p1_time += res_p1_time
                     elif res_p1_name == args.player2Name:
                         total_p2_move_time += res_p1_time
                         total_p2_turns += res_p1_turns
+                        game_p2_time += res_p1_time
 
                     # player2 slot in result
                     if res_p2_name == args.player1Name:
                         total_p1_move_time += res_p2_time
                         total_p1_turns += res_p2_turns
+                        game_p1_time += res_p2_time
                     elif res_p2_name == args.player2Name:
                         total_p2_move_time += res_p2_time
                         total_p2_turns += res_p2_turns
+                        game_p2_time += res_p2_time
+
+                    # compare per-game total think time
+                    if game_p1_time < game_p2_time:
+                        p1_faster_games += 1
+                    elif game_p2_time < game_p1_time:
+                        p2_faster_games += 1
+                    else:
+                        tie_faster_games += 1
 
                     total_game_time += game_time
                     games_counted += 1
@@ -348,6 +369,7 @@ if __name__ == "__main__":
                 f"{'Avg/game s':>12}"
                 f"{'Moves':>8}"
                 f"{'Avg/move s':>12}"
+                f"{'Faster':>8}"
             )
 
             print(
@@ -358,6 +380,7 @@ if __name__ == "__main__":
                 f"{p1_avg_game_think:>12.6f}"
                 f"{total_p1_turns:>8}"
                 f"{p1_avg_move_str:>12}"
+                f"{p1_faster_games:>8}"
             )
 
             print(
@@ -368,9 +391,11 @@ if __name__ == "__main__":
                 f"{p2_avg_game_think:>12.6f}"
                 f"{total_p2_turns:>8}"
                 f"{p2_avg_move_str:>12}"
+                f"{p2_faster_games:>8}"
             )
 
             print(f"\nOther/failed games: {other_results}")
             print(f"Mean total game time: {avg_game_time:.6f}s")
+            print(f"Tied speed games: {tie_faster_games}")
         else:
             print("\nNo valid games to compute stats.")
