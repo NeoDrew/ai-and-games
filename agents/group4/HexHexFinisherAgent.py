@@ -21,7 +21,7 @@ class HexHexFinisherAgent(AgentBase):
             (i, j) for i in range(self._board_size) for j in range(self._board_size)
         ]
         self.hexhexAgent = HexHexAgent.HexHexAgent(self._colour)
-        self.MCTSAgent = MCTSAgent.MCTSAgent(self._colour)
+        # self.MCTSAgent = MCTSAgent.MCTSAgent(self._colour)
         self.is_board_saturated = False
         self.current_board_state = None
 
@@ -71,14 +71,14 @@ class HexHexFinisherAgent(AgentBase):
 
     def make_move(self, turn: int, board: Board, opp_move: Move | None) -> Move:
 
-        self.validate_board_state(board)
+        # self.validate_board_state(board)
 
         if turn > self._board_size:
             winning_move = self._check_all_moves_for_immediate_win(board)
             if winning_move:
                 return winning_move
 
-        if self._is_board_saturated(board):
-            return self.MCTSAgent.make_move(turn, board, opp_move)
+        # if self._is_board_saturated(board):
+        #     return self.MCTSAgent.make_move(turn, board, opp_move)
 
         return self.hexhexAgent.make_move(turn, board, opp_move)
