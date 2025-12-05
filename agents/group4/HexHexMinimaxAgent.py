@@ -2,6 +2,7 @@ from src.AgentBase import AgentBase
 from src.Board import Board
 from src.Colour import Colour
 from src.Move import Move
+from agents.group4.MinimaxAgent import MinimaxAgent
 import os
 os.environ["TORCH_CPP_LOG_LEVEL"] = "ERROR" #Supress NNPACK warnings
 import torch
@@ -64,15 +65,16 @@ class PreTrainedRotatedModel(Module):
         y = torch.flip(y_flip, [1])
         return (self.internal_model(x) + y) / 2
 
-class HexHexAgent(AgentBase):
+class HexHexMinimaxAgent(AgentBase):
     """
         A HexHex-based agent (https://github.com/harbecke/HexHex) for playing Hex.
 
-        Loads in the pre-trained model configuration, for the intention of 
-        downstream fine-tuning.
+        Loads in the pre-trained model configuration, and applies Minimax (with
+        alpha-beta pruning) techniques to refine game playing decisions.
     """
     def __init__(self, colour: Colour):
         super().__init__(colour)
+        self.minimax_agent = MinimaxAgent(colour)
         self.colour = colour
         hexhex_path = "agents/group4/hexhex.pt"
         hexhex_info = torch.load(hexhex_path, weights_only=False, map_location=torch.device('cpu'))
@@ -105,6 +107,72 @@ class HexHexAgent(AgentBase):
             self.model.load_state_dict(new_state)
 
         self.model.eval() #Enable inference
+
+    #def _move_score(self, board: Board, move: Move) -> float:
+    #    """Returns a score for the given move based on heuristics"""
+    #    board.set_tile_colour(move.x, move.y, self.colour)
+    #    my_score = self._longest_path_length(board, self.colour)
+    #    opp_score = self._longest_path_length(board, self.colour)
+    #    board.set_tile_colour(move.x, move.y, None)
+    #    return my_score - opp_score
+    
+    def _is_winning_move(self, board: Board, move: Move) -> bool:
+        board.set_tile_colour(move.x, move.y, self.colour)
+        if board.has_ended(self.colour):
+            board.set_tile_colour(move.x, move.y, None)
+            return True
+        else:
+            board.set_tile_colour(move.x, move.y, None)
+            return False
+
+    def _get_candidate_moves(self, board: Board, topk=10) -> list[Move]:
+        """
+            Generate candidates moves from the neural network
+            
+            :param board: The current game board
+            :param topk: The number of candidate moves to return
+            :return candidate_moves: A list of candidate moves
+        """
+        size = board.size
+        x_unrot = self._convert_board_format(board=board, rotate=False)
+        x = self._convert_board_format(board=board, rotate=True)
+
+        with torch.no_grad():
+            logits = self.model(x)[0]
+            logits = logits.reshape(size, size) #Convert to move coords
+
+        #If playing as Blue, need to re-rotate back into "normal" coords
+        if self.colour == Colour.BLUE:
+            logits = torch.rot90(logits, k=1, dims=[0,1])
+
+        #Mask out illegal positions
+        occupied = (x_unrot[0, 0, 1:-1, 1:-1] + x_unrot[0, 1, 1:-1, 1:-1]) > 0
+        logits[occupied] = -float('inf')
+
+        # - - - Heuristics for augmenting logits - - -
+        #Board centre attraction
+        coords = torch.arange(size)
+        xx, yy = torch.meshgrid(coords, coords, indexing='ij')
+        dist_center = torch.sqrt((xx - size/2)**2 + (yy - size/2)**2)
+        center_bonus = -0.15 * dist_center      #Closer to centre = higher logit
+        logits += center_bonus
+
+        #Local connectivity bonus
+        adj_bonus = torch.zeros_like(logits)
+        for dx, dy in [(1,0),(-1,0),(0,1),(0,-1)]:
+            adj = torch.roll(x_unrot[0,0,1:-1,1:-1], shifts=(dx,dy), dims=(0,1))
+            adj_bonus += 0.4 * adj
+        logits += adj_bonus
+
+        #Get top k moves as candidates
+        probs = torch.softmax(logits.flatten() / 0.8, dim=0) #Smooth the model's predictions
+        top_idx = torch.multinomial(probs, num_samples=topk, replacement=False)
+        candidate_moves = [
+            Move(idx // size, idx % size)
+            for idx in top_idx
+        ]
+
+        return candidate_moves
 
 
     def _convert_board_format(self, board: Board, rotate: bool) -> torch.Tensor:
@@ -153,24 +221,18 @@ class HexHexAgent(AgentBase):
             if swap:
                 return Move(-1, -1)
 
-        x_unrot = self._convert_board_format(board=board, rotate=False)
-        x = self._convert_board_format(board=board, rotate=True)
+        candidates = self._get_candidate_moves(board)
 
-        with torch.no_grad():
-            logits = self.model(x)[0]
-            logits = logits.reshape(size, size) #Convert to move coords
+        best_score = float('-inf')
+        best_move = None
+        for move in candidates:
+            if self._is_winning_move(board, move):
+                return move
+            board.set_tile_colour(move.x, move.y, self.colour)
+            score = self.minimax_agent.minimaxVal(board, Colour.opposite(self.colour), depth=2, alpha=float('inf'), beta=float('inf'))
+            board.set_tile_colour(move.x, move.y, None) #Undo move
+            if score > best_score:
+                best_score = score
+                best_move = move
 
-        #If playing as Blue, need to re-rotate back into "normal" coords
-        if self.colour == Colour.BLUE:
-            logits = torch.rot90(logits, k=1, dims=[0,1])
-
-        #Mask out illegal positions
-        occupied = (x_unrot[0, 0, 1:-1, 1:-1] + x_unrot[0, 1, 1:-1, 1:-1]) > 0
-        logits[occupied] = -float('inf')
-
-        #Select argmax
-        flat_index = torch.argmax(logits).item()
-        move_x = flat_index // size
-        move_y = flat_index % size
-
-        return Move(int(move_x), int(move_y))
+        return best_move
