@@ -179,7 +179,7 @@ class HexHexMinimaxAgent(AgentBase):
         opp_adj_bonus = torch.zeros_like(logits)
         for dx, dy in [(1,0),(-1,0),(0,1),(0,-1),(1,1),(1,-1),(-1,1),(-1,-1)]:
             adj = torch.roll(x_unrot[0,1,1:-1,1:-1], shifts=(dx,dy), dims=(0,1))
-            opp_adj_bonus += 0.8 * adj
+            opp_adj_bonus += 1.0 * adj
         logits += opp_adj_bonus
 
         #Get top k moves as candidates
