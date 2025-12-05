@@ -139,9 +139,20 @@ class HexHexAgent(AgentBase):
             x = torch.rot90(x, k=-1, dims=[2, 3])
 
         return x
+    
+    def _should_swap(self, move: Move, board_size: int) -> bool:
+        centre = board_size // 2
+        return abs(move.x - centre) <= 1 and abs(move.y - centre) <= 1
 
     def make_move(self, turn: int, board: Board, opp_move: Move | None) -> Move:
         size = board.size
+
+        #Decide whether to swap or not
+        if turn == 2:
+            swap = self._should_swap(opp_move, size)
+            if swap:
+                return Move(-1, -1)
+
         x_unrot = self._convert_board_format(board=board, rotate=False)
         x = self._convert_board_format(board=board, rotate=True)
 
