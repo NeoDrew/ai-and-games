@@ -160,3 +160,82 @@ clear
 python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "hexhex" -p2 "agents.group4.MCTSAgent MCTSAgent" --player2Name "MCTS"
 clear
 exit
+clear
+python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "hexhex" -p2 "agents.group4.MCTSAgent MCTSAgent" --player2Name "MCTS" -n 10
+clear
+python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "hexhex" -p2 "agents.group4.LLMAgent LLMAgent" --player2Name "LLMAgent" -n 10
+python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "hexhex" -p2 "agents.group4.MCTSAgent MCTSAgent" --player2Name "MCTS"
+python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "hexhex" -p2 "agents.group4.LLMAgent LLMAgent" --player2Name "LLMAgent" -n 10
+clear
+python3 Hex.py   -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "hexhex"   -p2 "agents.group4.LLMAgent LLMAgent" --player2Name "LLMAgent"   -n 10 --sequential
+clear
+python3 Hex.py   -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "hexhex"   -p2 "agents.group4.LLMAgent LLMAgent" --player2Name "LLMAgent"   -n 10 --sequential
+clear
+python3 Hex.py   -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "hexhex"   -p2 "agents.group4.LLMAgent LLMAgent" --player2Name "LLMAgent"   -n 10 --sequential
+clear
+python3 Hex.py   -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "hexhex"   -p2 "agents.group4.LLMAgent LLMAgent" --player2Name "LLMAgent"   -n 10 
+python3 Hex.py   -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "hexhex"   -p2 "agents.group4.LLMAgent LLMAgent" --player2Name "LLMAgent"   -n 10 
+python3 Hex.py   -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "hexhex"   -p2 "agents.group4.LLMAgent LLMAgent" --player2Name "LLMAgent"   -n 10 
+python3 Hex.py   -p1 "agents.group4.MCTSAgent MCTSAgent" --player1Name "mcts"   -p2 "agents.group4.MinimaxAgent MinimaxAgent" --player2Name "MinimaxAgent" 
+clear
+python3 Hex.py   -p1 "agents.group4.MCTSAgent MCTSAgent" --player1Name "mcts"   -p2 "agents.group4.MinimaxAgent MinimaxAgent" --player2Name "MinimaxAgent" -10
+python3 Hex.py   -p1 "agents.group4.MCTSAgent MCTSAgent" --player1Name "mcts"   -p2 "agents.group4.MinimaxAgent MinimaxAgent" --player2Name "MinimaxAgent" -n 10
+python3 Hex.py   -p1 "agents.group4.LLMAgent LLMAgent" --player1Name "mcts"   -p2 "agents.group4.LLMAgent LLMAgent" --player2Name "LLMAgent" -10
+python3 Hex.py   -p1 "agents.group4.LLMAgent LLMAgent" --player1Name "mcts"   -p2 "agents.group4.LLMAgent LLMAgent" --player2Name "LLMAgent" -n 10
+python3 Hex.py   -p1 "agents.group4.LLMAgent LLMAgent" --player1Name "LLMAgent1"   -p2 "agents.group4.LLMAgent LLMAgent" --player2Name "LLMAgent2" -n 10
+clear
+python3 Hex.py   -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "hexhex"   -p2 "agents.group4.LLMAgent LLMAgent"       --player2Name "LLMAgent"   -n 20
+clear
+python3 Hex.py   -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "hexhex"   -p2 "agents.group4.LLMAgent LLMAgent"       --player2Name "LLMAgent"   -n 20
+clear
+python3 Hex.py   -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "hexhex"   -p2 "agents.group4.LLMAgent LLMAgent"       --player2Name "LLMAgent"   -n 20
+clear
+python3 Hex.py   -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "hexhex"   -p2 "agents.group4.LLMAgent LLMAgent"       --player2Name "LLMAgent"   -n 20
+clear
+python3 Hex.py   -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "hexhex"   -p2 "agents.group4.LLMAgent LLMAgent"       --player2Name "LLMAgent"   -n 5
+clear
+python3 Hex.py   -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "hexhex"   -p2 "agents.group4.LLMAgent LLMAgent"       --player2Name "LLMAgent"   -n 5
+clear
+python3 Hex.py   -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "hexhex"   -p2 "agents.group4.LLMAgent LLMAgent"       --player2Name "LLMAgent"   -n 5
+python3 Hex.py   -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "hexhex"   -p2 "agents.group4.LLMAgent LLMAgent"       --player2Name "LLMAgent"   -n 5
+python3 Hex.py   -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "hexhex"   -p2 "agents.group4.LLMAgent LLMAgent"       --player2Name "LLMAgent"   -n 5
+python3 Hex.py   -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "hexhex"   -p2 "agents.group4.LLMAgent LLMAgent"       --player2Name "LLMAgent"   -n 5
+python3 Hex.py   -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "hexhex"   -p2 "agents.group4.LLMAgent LLMAgent"       --player2Name "LLMAgent"   -n 100
+clear
+python3 Hex.py   -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "hexhex"   -p2 "agents.group4.LLMAgent LLMAgent"       --player2Name "LLMAgent"   -n 100
+python3 Hex.py -p1 "agents.group4.LLMAgent LLMAgent"       --player1Name "LLMAgent"                -p2 "agents.group4.HexHexAgent HexHexAgent" --player2Name "hexhex"                -n 50
+clear
+python3 Hex.py -p1 "agents.group4.LLMAgent LLMAgent"       --player1Name "LLMAgent"                -p2 "agents.group4.HexHexAgent HexHexAgent" --player2Name "hexhex"                -n 25
+clear
+python3 Hex.py -p1 "agents.group4.MinimaxAgent MinimaxAgent"       --player1Name "MinimaxAgent"                -p2 "agents.group4.HexHexAgent HexHexAgent" --player2Name "hexhex"                -n 25
+clear
+python3 Hex.py -p1 "agents.group4.MinimaxAgent MinimaxAgent"       --player1Name "MinimaxAgent"                -p2 "agents.group4.HexHexAgent HexHexAgent" --player2Name "hexhex"                -n 50
+python3 Hex.py -p1 "agents.group4.HexHexAgent" --player1Name "HexHex" -p2 "agents.group4.LLMAgent LLMAgent" --player2Name "llm" -n 50
+python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "HexHex" -p2 "agents.group4.LLMAgent LLMAgent" --player2Name "llm" -n 50
+python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "HexHex" -p2 "agents.group4.MCTSAgent MCTSAgent" --player2Name "mcts" -n 50
+clear
+python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "HexHex" -p2 "agents.group4.MCTSAgent MCTSAgent" --player2Name "mcts" -n 50
+python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "HexHex" -p2 "agents.group4.LLMAgent LLMAgent" --player2Name "llm" -n 10
+python3 Hex.py -p1 "agents.group4.MCTSAgent MCTSAgent" --player1Name "MCTS" -p2 "agents.group4.MinimaxAgent MinimaxAgent" --player2Name "minimax" -n 10
+clear
+python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "HexHex" -p2 "agents.group4.HexHexFinisher HexHexFinisherAgent" --player2Name "finisher" 
+python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "HexHex" -p2 "agents.group4.HexHexFinisherAgent HexHexFinisherAgent" --player2Name "finisher" 
+python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "HexHex" -p2 "agents.group4.HexHexFinisherAgent HexHexFinisherAgent" --player2Name "finisher" 
+clear
+python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "HexHex" -p2 "agents.group4.HexHexFinisherAgent HexHexFinisherAgent" --player2Name "finisher" 
+clear
+python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "HexHex" -p2 "agents.group4.HexHexFinisherAgent HexHexFinisherAgent" --player2Name "finisher" 
+clear
+python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "HexHex" -p2 "agents.group4.HexHexFinisherAgent HexHexFinisherAgent" --player2Name "finisher" 
+clear
+python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "HexHex" -p2 "agents.group4.HexHexFinisherAgent HexHexFinisherAgent" --player2Name "finisher" 
+python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "HexHex" -p2 "agents.group4.HexHexFinisherAgent HexHexFinisherAgent" --player2Name "finisher" -n 10
+python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "HexHex" -p2 "agents.group4.HexHexFinisherAgent HexHexFinisherAgent" --player2Name "finisher"
+clear
+python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "HexHex" -p2 "agents.group4.HexHexFinisherAgent HexHexFinisherAgent" --player2Name "finisher" -n 50
+python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "HexHex" -p2 "agents.group4.HexHexFinisherAgent HexHexFinisherAgent" --player2Name "finisher"
+python3 Hex.py -p2 "agents.group4.HexHexAgent HexHexAgent" --player2Name "HexHex" -p1 "agents.group4.HexHexFinisherAgent HexHexFinisherAgent" --player1Name "finisher"
+python3 Hex.py -p2 "agents.group4.HexHexAgent HexHexAgent" --player2Name "HexHex" -p1 "agents.group4.HexHexFinisherAgent HexHexFinisherAgent" --player1Name "finisher"
+python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "HexHex" -p2 "agents.group4.HexHexFinisherAgent HexHexFinisherAgent" --player2Name "finisher" -n 200
+clear
+exit
