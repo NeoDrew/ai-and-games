@@ -2,6 +2,8 @@ from src.AgentBase import AgentBase
 from src.Board import Board
 from src.Colour import Colour
 from src.Move import Move
+import os
+os.environ["TORCH_CPP_LOG_LEVEL"] = "ERROR" #Supress NNPACK warnings
 import torch
 from torch.nn import Module, Conv2d, BatchNorm2d, ModuleList, Parameter
 
@@ -134,7 +136,7 @@ class HexHexAgent(AgentBase):
         if rotate and self.colour == Colour.BLUE:
             #If playing as Blue, we want to connect left -> right.
             #Rotate the board by 90 degrees.
-            x = torch.rot90(x, k=1, dims=[2, 3])
+            x = torch.rot90(x, k=-1, dims=[2, 3])
 
         return x
 
@@ -149,7 +151,7 @@ class HexHexAgent(AgentBase):
 
         #If playing as Blue, need to re-rotate back into "normal" coords
         if self.colour == Colour.BLUE:
-            logits = torch.rot90(logits, k=3)
+            logits = torch.rot90(logits, k=1, dims=[0,1])
 
         #Mask out illegal positions
         occupied = (x_unrot[0, 0, 1:-1, 1:-1] + x_unrot[0, 1, 1:-1, 1:-1]) > 0
