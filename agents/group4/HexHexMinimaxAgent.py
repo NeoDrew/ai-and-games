@@ -107,18 +107,29 @@ class HexHexMinimaxAgent(AgentBase):
             self.model.load_state_dict(new_state)
 
         self.model.eval() #Enable inference
-
-    #def _move_score(self, board: Board, move: Move) -> float:
-    #    """Returns a score for the given move based on heuristics"""
-    #    board.set_tile_colour(move.x, move.y, self.colour)
-    #    my_score = self._longest_path_length(board, self.colour)
-    #    opp_score = self._longest_path_length(board, self.colour)
-    #    board.set_tile_colour(move.x, move.y, None)
-    #    return my_score - opp_score
     
-    def _is_winning_move(self, board: Board, move: Move) -> bool:
+    def get_legal_moves(self, board: Board) -> list:
+        """
+            Gets a list of all legal moves based on the current board state
+        
+            :param board: Current state of the game board.
+            :return legal_moves: A list of Move objects, denoting the available legal moves.
+        """
+        legal_moves = []
+        tiles = board.tiles
+
+        for i in range(board.size):
+            for j in range(board.size):
+                if not tiles[i][j].colour:
+                    #Tile is unoccupied, could move here
+                    legal_moves.append(Move(i,j))
+
+        return legal_moves
+
+
+    def _is_winning_move(self, board: Board, move: Move, colour: Colour) -> bool:
         board.set_tile_colour(move.x, move.y, self.colour)
-        if board.has_ended(self.colour):
+        if board.has_ended(colour):
             board.set_tile_colour(move.x, move.y, None)
             return True
         else:
@@ -159,20 +170,42 @@ class HexHexMinimaxAgent(AgentBase):
 
         #Local connectivity bonus
         adj_bonus = torch.zeros_like(logits)
-        for dx, dy in [(1,0),(-1,0),(0,1),(0,-1)]:
+        for dx, dy in [(1,0),(-1,0),(0,1),(0,-1),(1,1),(1,-1),(-1,1),(-1,-1)]:
             adj = torch.roll(x_unrot[0,0,1:-1,1:-1], shifts=(dx,dy), dims=(0,1))
-            adj_bonus += 0.4 * adj
+            adj_bonus += 0.6 * adj
         logits += adj_bonus
 
+        #Blocking opponent from increasing their connectivity
+        opp_adj_bonus = torch.zeros_like(logits)
+        for dx, dy in [(1,0),(-1,0),(0,1),(0,-1),(1,1),(1,-1),(-1,1),(-1,-1)]:
+            adj = torch.roll(x_unrot[0,1,1:-1,1:-1], shifts=(dx,dy), dims=(0,1))
+            opp_adj_bonus += 0.8 * adj
+        logits += opp_adj_bonus
+
         #Get top k moves as candidates
-        probs = torch.softmax(logits.flatten() / 0.8, dim=0) #Smooth the model's predictions
-        top_idx = torch.multinomial(probs, num_samples=topk, replacement=False)
+        top_idx = logits.flatten().topk(topk).indices
+        candidate_moves = [Move(idx // size, idx % size) for idx in top_idx]
         candidate_moves = [
             Move(idx // size, idx % size)
             for idx in top_idx
         ]
 
-        return candidate_moves
+        #Add moves that block opponent wins
+        for move in self.get_legal_moves(board):
+            if self._is_winning_move(board, move, Colour.opposite(self.colour)):
+                #Insert at front for prioritisation
+                candidate_moves.insert(0, move)
+
+        #Remove duplicate moves
+        seen = set()
+        candidate_moves_ordered = []
+        for move in candidate_moves:
+            key = (move.x, move.y)
+            if key not in seen:
+                candidate_moves_ordered.append(move)
+                seen.add(key)
+
+        return candidate_moves_ordered
 
 
     def _convert_board_format(self, board: Board, rotate: bool) -> torch.Tensor:
@@ -223,13 +256,14 @@ class HexHexMinimaxAgent(AgentBase):
 
         candidates = self._get_candidate_moves(board)
 
+        top_candidates = candidates[:3]
         best_score = float('-inf')
         best_move = None
-        for move in candidates:
-            if self._is_winning_move(board, move):
+        for move in top_candidates:
+            if self._is_winning_move(board, move, self.colour):
                 return move
             board.set_tile_colour(move.x, move.y, self.colour)
-            score = self.minimax_agent.minimaxVal(board, Colour.opposite(self.colour), depth=2, alpha=float('inf'), beta=float('inf'))
+            score = self.minimax_agent.minimaxVal(board, Colour.opposite(self.colour), depth=2, alpha=float('-inf'), beta=float('inf'))
             board.set_tile_colour(move.x, move.y, None) #Undo move
             if score > best_score:
                 best_score = score
