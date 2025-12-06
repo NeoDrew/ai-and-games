@@ -68,13 +68,13 @@ class HexHexAgent(AgentBase):
     """
         A HexHex-based agent (https://github.com/harbecke/HexHex) for playing Hex.
 
-        Loads in the pre-trained model configuration, for the intention of 
-        downstream fine-tuning.
+        Loads in the pre-trained model configuration, constructing
+        a PyTorch module with the required architecture
     """
     def __init__(self, colour: Colour):
         super().__init__(colour)
         self.colour = colour
-        hexhex_path = "agents/group4/hexhex.pt"
+        hexhex_path = "agents/group4/hexhex_pretrained.pt"
         hexhex_info = torch.load(hexhex_path, weights_only=False, map_location=torch.device('cpu'))
         
         #Strip wrapper prefixes

@@ -5,9 +5,9 @@ import torch.nn.functional as F
 import copy
 import os
 import sys
-from agents.group4.HexHexMinimaxAgent import PreTrainedModel
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 sys.path.insert(0, PROJECT_ROOT)
+from agents.group4.HexHexMinimaxAgent import PreTrainedModel
 
 BOARD_SIZE = 11
 DATASET_PATH = "agents/group4/hex_dataset.pt"
@@ -63,7 +63,7 @@ print(f"Loaded {len(dataset)} examples (including augmentations).")
 
 #Load pre-trained model
 print("Loading pre-trained HexHex model...")
-hexhex_path = "agents/group4/hexhex.pt"
+hexhex_path = "agents/group4/pretrained_hexhex.pt"
 hexhex_info = torch.load(hexhex_path, map_location="cpu", weights_only=False)
 original_config = hexhex_info["config"]
 
