@@ -3,6 +3,7 @@ from src.Board import Board
 from src.Colour import Colour
 from src.Move import Move
 from agents.group4.MinimaxAgent import MinimaxAgent
+from agents.group4.MinimaxHelper import MinimaxHelper
 import os
 os.environ["TORCH_CPP_LOG_LEVEL"] = "ERROR" #Supress NNPACK warnings
 import torch
@@ -128,7 +129,7 @@ class HexHexMinimaxAgent(AgentBase):
 
 
     def _is_winning_move(self, board: Board, move: Move, colour: Colour) -> bool:
-        board.set_tile_colour(move.x, move.y, self.colour)
+        board.set_tile_colour(move.x, move.y, colour)
         if board.has_ended(colour):
             board.set_tile_colour(move.x, move.y, None)
             return True
@@ -136,7 +137,7 @@ class HexHexMinimaxAgent(AgentBase):
             board.set_tile_colour(move.x, move.y, None)
             return False
 
-    def _get_candidate_moves(self, board: Board, topk=10) -> list[Move]:
+    def _get_candidate_moves(self, board: Board, topk=20) -> list[Move]:
         """
             Generate candidates moves from the neural network
             
@@ -189,12 +190,6 @@ class HexHexMinimaxAgent(AgentBase):
             Move(idx // size, idx % size)
             for idx in top_idx
         ]
-
-        #Add moves that block opponent wins
-        for move in self.get_legal_moves(board):
-            if self._is_winning_move(board, move, Colour.opposite(self.colour)):
-                #Insert at front for prioritisation
-                candidate_moves.insert(0, move)
 
         #Remove duplicate moves
         seen = set()
@@ -254,14 +249,30 @@ class HexHexMinimaxAgent(AgentBase):
             if swap:
                 return Move(-1, -1)
 
-        candidates = self._get_candidate_moves(board)
+        nn_candidates = self._get_candidate_moves(board)
+        neighbours = MinimaxAgent.getNeighbourMoves(board)
+        candidates = [m for m in nn_candidates if m in neighbours]
 
-        top_candidates = candidates[:3]
+        if not candidates:
+            candidates = neighbours
+
+        #Prefer immediate self-winning moves
+        for move in candidates:
+            if self._is_winning_move(board, move, self.colour):
+                return move
+
+        top_candidates = sorted(
+            candidates[:15],
+            key=lambda m: MinimaxHelper.getMoveScore(board, m, self.colour),
+            reverse=True
+        )[:10]
+
         best_score = float('-inf')
         best_move = None
         for move in top_candidates:
             if self._is_winning_move(board, move, self.colour):
                 return move
+            
             board.set_tile_colour(move.x, move.y, self.colour)
             score = self.minimax_agent.minimaxVal(board, Colour.opposite(self.colour), depth=2, alpha=float('-inf'), beta=float('inf'))
             board.set_tile_colour(move.x, move.y, None) #Undo move

@@ -126,7 +126,7 @@ class MinimaxAgent(AgentBase):
         else:
             min_eval = float('inf')
             candidate_moves = self.getNeighbourMoves(board)
-            ordered_moves = sorted(candidate_moves, key=lambda m: MinimaxHelper.getMoveScore(board, m, current_colour), reverse=True)
+            ordered_moves = sorted(candidate_moves, key=lambda m: MinimaxHelper.getMoveScore(board, m, current_colour), reverse=False)
             for move in ordered_moves:
                 board.set_tile_colour(move.x, move.y, current_colour)
                 eval = self.minimaxVal(board, Colour.opposite(current_colour), depth-1, alpha, beta)
