@@ -9,7 +9,7 @@ from . import HexHexAgent
 from . import MCTSAgent
 
 
-class HexHexFinisherAgent(AgentBase):
+class HexHexMCTSAgent(AgentBase):
 
     _choices: list[Move]
     _board_size: int = 11

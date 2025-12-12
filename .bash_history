@@ -239,3 +239,19 @@ python3 Hex.py -p2 "agents.group4.HexHexAgent HexHexAgent" --player2Name "HexHex
 python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "HexHex" -p2 "agents.group4.HexHexFinisherAgent HexHexFinisherAgent" --player2Name "finisher" -n 200
 clear
 exit
+clear
+clear
+python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "HexHex" -p2 "agents.group4.HexHexFinisherAgent HexHexFinisherAgent" --player2Name "finisher" -n 200
+clear
+python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "HexHex" -p2 "agents.group4.HexHexFinisherAgent HexHexFinisherAgent" --player2Name "finisher" -n 200
+clear
+exit
+clear
+python
+python3
+clear
+python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "HexHex" -p2 "agents.group4.HexHexMinimaxAgent HexHexMinimaxAgent" --player2Name "hexhexminimax" -n 100
+clear
+python3 Hex.py -p1 "agents.group4.HexHexAgent HexHexAgent" --player1Name "HexHex" -p2 "agents.group4.MinimaxAgent MinimaxAgent" --player2Name "minimax" -n 100
+
+python3 Hex.py -p1 "agents.group4.LLMAgent LLMAgent" --player1Name "LLM" -p2 "agents.group4.MinimaxAgent MinimaxAgent" --player2Name "minimax" -n 100
